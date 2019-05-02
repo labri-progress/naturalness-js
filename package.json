@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xblanc33/naturalness.git"
+    "url": "git+https://github.com/labri-progress/naturalness-js.git"
   },
   "keywords": [
     "Naturalness",
@@ -20,9 +20,9 @@
   "author": "Xavier Blanc",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/xblanc33/naturalness/issues"
+    "url": "https://github.com/labri-progress/naturalness-js/issues"
   },
-  "homepage": "https://github.com/xblanc33/naturalness#readme",
+  "homepage": "https://github.com/labri-progress/naturalness-js#readme",
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^6.0.0"
