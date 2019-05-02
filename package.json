@@ -1,0 +1,30 @@
+{
+  "name": "naturalness",
+  "version": "1.0.0",
+  "description": "Library implementing \"On the Naturalness of Software\"",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xblanc33/naturalness.git"
+  },
+  "keywords": [
+    "Naturalness",
+    "Ngram"
+  ],
+  "author": "Xavier Blanc",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/xblanc33/naturalness/issues"
+  },
+  "homepage": "https://github.com/xblanc33/naturalness#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.0.0"
+  }
+}
