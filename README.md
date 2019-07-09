@@ -63,12 +63,15 @@ model.learn([c, d, a]);
 //c, d, a
 
 model.learnAllSuffix([f, f, f, f, f, f, f, f, f, f]);
-//Many sequences have been learnt
-//f, f, f, f, f, f, f, f, f, f
-//f, f, f, f, f, f, f, f, f
-//f, f, f, f, f, f, f, f
+//Many sequences have been learnt (max size is 6)
+//f, f, f, f, f, f
+//f, f, f, f, f
+//f, f, f, f
 //...
 
-let map = model.getProbabilityMap([c, d]);
-console.log(`p(e | [c, d]) : ${map.get(e)[0]}`);
+let map = model.getProbabilityMap([a, b, c, d]);
+console.log(`p(e | [a, b, c, d]) : ${map.get(e)[0]}`);
+console.log(`p(e | [b, c, d]) : ${map.get(e)[1]}`);
+console.log(`p(e | [c, d]) : ${map.get(e)[2]}`);
+console.log(`p(e | [d]) : ${map.get(e)[3]}`);
 ```
