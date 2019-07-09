@@ -27,6 +27,15 @@ describe('EventTree', function () {
             tree.learn(baList);
             assert.equal(tree.occurrence, 1);
         })
+
+        it('should learn a sequence of length < to size', () => {
+            let eventA = new Event('a');
+            let eventB = new Event('b');
+            let baList = [eventB];
+            let tree = new EventTree(2);
+            tree.learn(baList);
+            assert.equal(tree.occurrence, 1);
+        })
     });
     describe('#getProbabilityMap()', () => {
         it('should return one for p(a|b)', () => {
@@ -81,7 +90,7 @@ describe('EventTree', function () {
             assert.equal(map.get(eventA).length, 2);
         })
 
-        it('should return one for 3 sequence', () => {
+        it('should lean all suffix and return probability', () => {
             let eventA = new Event('a');
             let eventB = new Event('b');
             let aabaList = [eventA, eventA, eventB, eventA];
@@ -89,9 +98,9 @@ describe('EventTree', function () {
             let aaaaList = [eventA, eventA, eventA, eventA];
 
             let tree = new EventTree(4);
-            tree.learn(aabaList);
-            tree.learn(aaabList);
-            tree.learn(aaaaList);
+            tree.learnAllSuffix(aabaList);
+            tree.learnAllSuffix(aaabList);
+            tree.learnAllSuffix(aaaaList);
 
             let map = tree.getProbabilityMap([eventA, eventA]);
             assert.equal(map.get(eventA)[0], 2/3); 
