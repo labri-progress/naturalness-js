@@ -37,6 +37,9 @@ class EventTreeNode {
         if (this.size > 1) {
             let subEventList = eventList.slice(0, eventList.length - 1);
             let lastSubEvent = subEventList[subEventList.length - 1];
+            if (!lastSubEvent) {
+                return
+            }
             let childTreeNode = this.children.get(lastSubEvent);
             if (childTreeNode === undefined) {
                 childTreeNode = new EventTreeNode(lastSubEvent, this.size-1);
