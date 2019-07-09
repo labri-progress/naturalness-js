@@ -27,6 +27,10 @@ class EventTree {
         this.occurrence++;
     }
 
+    learnAllSuffix(sequence) {
+        generateSuffixSequenceArray(sequence).map(suffix => {this.learn(suffix)});
+    }
+
     getProbabilityMap(sequence) {
         if (! Array.isArray(sequence)) {
             throw 'sequence should be an array of event (not an array)';
