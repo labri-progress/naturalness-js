@@ -29,7 +29,6 @@ describe('EventTree', function () {
         })
 
         it('should learn a sequence of length < to size', () => {
-            let eventA = new Event('a');
             let eventB = new Event('b');
             let baList = [eventB];
             let tree = new EventTree(2);
