@@ -57,7 +57,7 @@ describe('EventTreeNode', function () {
             let eventB = new Event('b');
             let baList = [eventB, eventA];
             let aaList = [eventA, eventA];
-            let aTreeNode = new EventTreeNode(eventA, 2);
+            let aTreeNode = new EventTreeNode(eventA, 3);
             aTreeNode.learn(baList);
             aTreeNode.learn(aaList);
             assert.equal(aTreeNode.occurrence, 2);
@@ -82,18 +82,19 @@ describe('EventTreeNode', function () {
             aTreeNode.learn(baList);
             let occurence = aTreeNode.getOccurence(baList);
             assert.equal(occurence, 1);
-        })
-    });
-    describe('#getProbability()', () => {
-        it('should return one for [b,a]', () => {
+        });
+        it('should lean all suffix and return probability', () => {
             let eventA = new Event('a');
             let eventB = new Event('b');
-            let baList = [eventB, eventA];
-            let bList = [eventB];
-            let aTreeNode = new EventTreeNode(eventA, 2);
-            aTreeNode.learn(baList);
-            let proba = aTreeNode.getProbability(bList);
-            assert.equal(proba, 1);
-        })
+            let aabaList = [eventA, eventA, eventB, eventA];
+            let aaabList = [eventB, eventA, eventA, eventA];
+            let aaaaList = [eventA, eventA, eventA, eventA];
+
+            let aTreeNode = new EventTreeNode(eventA, 4);
+            aTreeNode.learn(aabaList);
+            aTreeNode.learn(aaabList);
+            aTreeNode.learn(aaaaList);
+            assert.equal(aTreeNode.getOccurence([eventA,eventA, eventA]),2); 
+        });
     });
 });

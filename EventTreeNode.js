@@ -34,12 +34,10 @@ class EventTreeNode {
         if (lastEvent.key !== this.key) {
             throw 'Cannot learn, different event';
         }
-        if (this.size > 1) {
-            let subEventList = eventList.slice(0, eventList.length - 1);
+        this.occurrence++;
+        let subEventList = eventList.slice(0, eventList.length - 1);
+        if (this.size > 1 && subEventList.length >= 1) {
             let lastSubEvent = subEventList[subEventList.length - 1];
-            if (!lastSubEvent) {
-                return
-            }
             let childTreeNode = this.children.get(lastSubEvent);
             if (childTreeNode === undefined) {
                 childTreeNode = new EventTreeNode(lastSubEvent, this.size-1);
@@ -47,13 +45,7 @@ class EventTreeNode {
             }
             childTreeNode.learn(subEventList);
         }
-        this.occurrence++;
-    }
-
-    getProbability(context) {
-        context.push(this.event);
-        let contextOccurence = this.getOccurence(context);
-        return contextOccurence / this.occurrence;
+        
     }
 
     getOccurence(sequence) {
@@ -72,19 +64,20 @@ class EventTreeNode {
         } 
         if (sequence.length === 1) {
             return this.occurrence;
-        }
-        if (this.size > 1) {
-            let subSequence = sequence.slice(0, sequence.length - 1);
-            let lastSubSequence = subSequence[subSequence.length -1];
-            let subTreeNode = this.children.get(lastSubSequence);
-            if (subTreeNode === undefined) {
+        } else {
+            if (this.size > 1) {
+                let subSequence = sequence.slice(0, sequence.length - 1);
+                let lastSubSequence = subSequence[subSequence.length -1];
+                let subTreeNode = this.children.get(lastSubSequence);
+                if (subTreeNode === undefined) {
+                    return 0;
+                } else {
+                    return subTreeNode.getOccurence(subSequence);
+                }
+            } else {
                 return 0;
             }
-            return subTreeNode.getOccurence(subSequence);
-        } else {
-            return 0;
         }
-        
     }
 }
 

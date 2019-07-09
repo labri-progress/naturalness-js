@@ -33,21 +33,43 @@ class EventTree {
 
     getProbabilityMap(sequence) {
         if (! Array.isArray(sequence)) {
-            throw 'sequence should be an array of event (not an array)';
+            throw 'sequence should be an array';
         }
         if (sequence.length < 1) {
             throw 'sequence should at least contain one event';
         }
-        if (sequence.length > this.size) {
+        let result = new Map();
+        if (sequence.length >= this.size) {
             sequence = sequence.slice(0, this.size);
         }
         let suffixSequenceArray = generateSuffixSequenceArray(sequence);
-        let result = new Map();
-        for (let child  of this.children.keys()) {
-            let probabilityArray = suffixSequenceArray.map(suffixSequence => {
-                return this.children.get(child).getProbability(suffixSequence);
-            });
-            result.set(child, probabilityArray);
+        let candidateSuffixMatrix = [];
+        for (let suffixSequenceId = 0; suffixSequenceId < suffixSequenceArray.length; suffixSequenceId++) {
+            const suffixSequence = suffixSequenceArray[suffixSequenceId];
+            candidateSuffixMatrix[suffixSequenceId] = [];
+            let candidateId = 0;
+            for (let candidate of this.children.keys()) {
+                result.set(candidate, [])
+                let suffixSequenceWithCandidate = [...suffixSequence];
+                suffixSequenceWithCandidate.push(candidate);
+                let occurrence = this.children.get(candidate).getOccurence(suffixSequenceWithCandidate);
+                candidateSuffixMatrix[suffixSequenceId][candidateId] = occurrence;
+                candidateId++;
+            }   
+        }
+        for (let suffixSequenceId = 0; suffixSequenceId < suffixSequenceArray.length; suffixSequenceId++) {
+            let allOccurrence = candidateSuffixMatrix[suffixSequenceId].reduce( (prev , cur) => cur + prev, 0);
+            let candidateId = 0;
+            for (let candidate of this.children.keys()) {
+                let proba;
+                if (allOccurrence === 0) {
+                    proba = 0;
+                } else {
+                    proba = candidateSuffixMatrix[suffixSequenceId][candidateId]/ allOccurrence;
+                }
+                result.get(candidate).push(proba);
+                candidateId++;
+            }
         }
         return result;
     }

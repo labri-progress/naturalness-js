@@ -47,7 +47,7 @@ describe('EventTree', function () {
             assert.equal(map.get(eventA).length, 1);
             assert.equal(map.get(eventA)[0], 1);
         });
-        it('should return one for p(a|c)', () => {
+        it('should return zero for p(a|c)', () => {
             let eventA = new Event('a');
             let eventB = new Event('b');
             let eventC = new Event('c');
@@ -58,7 +58,7 @@ describe('EventTree', function () {
             assert.equal(map.get(eventA)[0], 0); 
             assert.equal(map.get(eventA).length, 1); 
         });
-        it('should return one for p(a|c)', () => {
+        it('should return 0.5 for p(a|a)', () => {
             let eventA = new Event('a');
             let eventB = new Event('b');
             let eventC = new Event('c');
@@ -89,7 +89,7 @@ describe('EventTree', function () {
             assert.equal(map.get(eventA).length, 2);
         })
 
-        it.only('should return probability of sequence < to size', () => {
+        it('should return probability of sequence < to size', () => {
             let eventA = new Event('a');
             let eventB = new Event('b');
             let aaList = [eventA, eventA];
@@ -100,9 +100,8 @@ describe('EventTree', function () {
             tree.learn(baList);
  
             let map = tree.getProbabilityMap([eventA]);
-            assert.equal(map.get(eventA)[0], 0);
-            assert.equal(map.get(eventA)[1], 1/2);
-            assert.equal(map.get(eventA).length, 2);
+            assert.equal(map.get(eventA)[0], 1/2);
+            assert.equal(map.get(eventA).length, 1);
         })
 
         it('should lean all suffix and return probability', () => {
@@ -117,10 +116,14 @@ describe('EventTree', function () {
             tree.learnAllSuffix(aaabList);
             tree.learnAllSuffix(aaaaList);
 
+            //p(? | aa) and p(? | a)
             let map = tree.getProbabilityMap([eventA, eventA]);
-            console.log(map)
-            assert.equal(map.get(eventA)[0], 2/3); 
-            assert.equal(map.get(eventA)[1], 6/7); 
+            
+            //p(a | aa)
+            assert.equal(map.get(eventA)[0], 1); 
+
+            //p(a | a)
+            assert.equal(map.get(eventA)[1], 2/3); 
             assert.equal(map.get(eventA).length, 2); 
         })
     });
