@@ -89,6 +89,22 @@ describe('EventTree', function () {
             assert.equal(map.get(eventA).length, 2);
         })
 
+        it.only('should return probability of sequence < to size', () => {
+            let eventA = new Event('a');
+            let eventB = new Event('b');
+            let aaList = [eventA, eventA];
+            let baList = [eventB, eventA];
+ 
+            let tree = new EventTree(3);
+            tree.learn(aaList);
+            tree.learn(baList);
+ 
+            let map = tree.getProbabilityMap([eventA]);
+            assert.equal(map.get(eventA)[0], 0);
+            assert.equal(map.get(eventA)[1], 1/2);
+            assert.equal(map.get(eventA).length, 2);
+        })
+
         it('should lean all suffix and return probability', () => {
             let eventA = new Event('a');
             let eventB = new Event('b');
@@ -102,6 +118,7 @@ describe('EventTree', function () {
             tree.learnAllSuffix(aaaaList);
 
             let map = tree.getProbabilityMap([eventA, eventA]);
+            console.log(map)
             assert.equal(map.get(eventA)[0], 2/3); 
             assert.equal(map.get(eventA)[1], 6/7); 
             assert.equal(map.get(eventA).length, 2); 
