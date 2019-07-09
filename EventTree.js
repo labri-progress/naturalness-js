@@ -32,35 +32,22 @@ class EventTree {
     }
 
     getProbabilityMap(sequence) {
-        if (! Array.isArray(sequence)) {
-            throw 'sequence should be an array';
-        }
-        if (sequence.length < 1) {
-            throw 'sequence should at least contain one event';
-        }
+        let candidateSuffixMatrix = this.getProbabilityMatrix(sequence);
+        
         let result = new Map();
+        for (let candidate of this.children.keys()) {
+            result.set(candidate,[]);
+        }
+
         if (sequence.length >= this.size) {
             sequence = sequence.slice(0, this.size);
         }
         let suffixSequenceArray = generateSuffixSequenceArray(sequence);
-        let candidateSuffixMatrix = [];
-        for (let suffixSequenceId = 0; suffixSequenceId < suffixSequenceArray.length; suffixSequenceId++) {
-            const suffixSequence = suffixSequenceArray[suffixSequenceId];
-            candidateSuffixMatrix[suffixSequenceId] = [];
-            let candidateId = 0;
-            for (let candidate of this.children.keys()) {
-                result.set(candidate, [])
-                let suffixSequenceWithCandidate = [...suffixSequence];
-                suffixSequenceWithCandidate.push(candidate);
-                let occurrence = this.children.get(candidate).getOccurence(suffixSequenceWithCandidate);
-                candidateSuffixMatrix[suffixSequenceId][candidateId] = occurrence;
-                candidateId++;
-            }   
-        }
+        
         for (let suffixSequenceId = 0; suffixSequenceId < suffixSequenceArray.length; suffixSequenceId++) {
             let allOccurrence = candidateSuffixMatrix[suffixSequenceId].reduce( (prev , cur) => cur + prev, 0);
             let candidateId = 0;
-            for (let candidate of this.children.keys()) {
+            for (let candidate of this.children.keys()) {        
                 let proba;
                 if (allOccurrence === 0) {
                     proba = 0;
@@ -72,6 +59,33 @@ class EventTree {
             }
         }
         return result;
+    }
+
+    getProbabilityMatrix(sequence) {
+        if (! Array.isArray(sequence)) {
+            throw 'sequence should be an array';
+        }
+        if (sequence.length < 1) {
+            throw 'sequence should at least contain one event';
+        }
+        if (sequence.length >= this.size) {
+            sequence = sequence.slice(0, this.size);
+        }
+        let suffixSequenceArray = generateSuffixSequenceArray(sequence);
+        let candidateSuffixMatrix = [];
+        for (let suffixSequenceId = 0; suffixSequenceId < suffixSequenceArray.length; suffixSequenceId++) {
+            const suffixSequence = suffixSequenceArray[suffixSequenceId];
+            candidateSuffixMatrix[suffixSequenceId] = [];
+            let candidateId = 0;
+            for (let candidate of this.children.keys()) {
+                let suffixSequenceWithCandidate = [...suffixSequence];
+                suffixSequenceWithCandidate.push(candidate);
+                let occurrence = this.children.get(candidate).getOccurence(suffixSequenceWithCandidate);
+                candidateSuffixMatrix[suffixSequenceId][candidateId] = occurrence;
+                candidateId++;
+            }   
+        }
+        return candidateSuffixMatrix;
     }
 }
 
