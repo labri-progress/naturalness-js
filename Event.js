@@ -1,7 +1,7 @@
 class Event {
     constructor(value) {
         if (value === null || value === undefined) {
-            throw 'Cannot create Element with null or undefined';
+            throw 'Cannot create Event with null or undefined';
         }
         this.key = hashCode(value).toString();
         this.value = value;
