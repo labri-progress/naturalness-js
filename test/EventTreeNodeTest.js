@@ -61,8 +61,8 @@ describe('EventTreeNode', function () {
             aTreeNode.learn(baList);
             aTreeNode.learn(aaList);
             assert.equal(aTreeNode.occurrence, 2);
-            assert.equal(aTreeNode.children.get(eventA.key).occurrence, 1);
-            assert.equal(aTreeNode.children.get(eventB.key).occurrence, 1);
+            assert.equal(aTreeNode.children.get(eventA).occurrence, 1);
+            assert.equal(aTreeNode.children.get(eventB).occurrence, 1);
         })
     });
     describe('#getOccurence()', () => {

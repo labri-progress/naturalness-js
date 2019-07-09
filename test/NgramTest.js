@@ -1,40 +1,21 @@
 const assert = require('chai').assert;
+const expect = require('chai').expect;
 const Ngram = require('../Ngram.js');
 const Event = require('../Event.js');
 
 describe('Ngram', function() {
   describe('#constructor()', function() {
     it('should throw an exception with undefined eventList', () => {
-        try  {
-            let ng = new Ngram(undefined);
-            assert.fail();
-        } catch (ex) {
-
-        }
+        expect(() => {new Ngram(undefined)}).to.throw();
     });
     it('should throw an exception with null item', () => {
-        try  {
-            let ng = new Ngram(null);
-            assert.fail();
-        } catch (ex) {
-
-        }
+        expect(() => {new Ngram(null)}).to.throw();
     });
     it('should throw an exception with not an Array', () => {
-        try  {
-            let ng = new Ngram("hey");
-            assert.fail();
-        } catch (ex) {
-
-        }
+        expect(() => {new Ngram("hey")}).to.throw();
     });
     it('should throw an exception with not an Array of Event', () => {
-        try  {
-            let ng = new Ngram([1,2,3]);
-            assert.fail();
-        } catch (ex) {
-
-        }
+        expect(() => {new Ngram([1,2,3])}).to.throw();
     });
     it('should hash empty', () => {
         let ng = new Ngram([]);

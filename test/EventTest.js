@@ -1,23 +1,14 @@
 const assert = require('chai').assert;
+const expect = require('chai').expect;
 const Event = require('../Event.js');
 
 describe('Event', function() {
   describe('#constructor()', function() {
     it('should throw an exception with undefined value', () => {
-        try  {
-            let e = new Event(undefined);
-            assert.fail();
-        } catch (ex) {
-
-        }
+        expect(() => {new Event(undefined)}).to.throw();
     });
     it('should throw an exception with null value', () => {
-        try  {
-            let e = new Event(null);
-            assert.fail();
-        } catch (ex) {
-
-        }
+        expect(() => {new Event(null)}).to.throw();
     });
     it('should hash empty', () => {
         let e = new Event('');

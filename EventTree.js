@@ -1,4 +1,4 @@
-const Event = require('./Event.js');
+const EventTreeNode = require('./EventTreeNode.js');
 
 class EventTree {
     constructor(size) {
@@ -17,15 +17,44 @@ class EventTree {
         if (sequence === null || sequence === undefined || sequence.length === 0) {
             return;
         }
-        let lastEvent = sequence.evenList[sequence.length - 1];
-        let childTreeNode = this.children.get(lastEvent.key);
+        let lastEvent = sequence[sequence.length - 1];
+        let childTreeNode = this.children.get(lastEvent);
         if (childTreeNode === undefined) {
             childTreeNode = new EventTreeNode(lastEvent, this.size);
-            this.children.set(lastEvent.key, childTreeNode);
+            this.children.set(lastEvent, childTreeNode);
         }
         childTreeNode.learn(sequence);
         this.occurrence++;
     }
+
+    getProbabilityMap(sequence) {
+        if (! Array.isArray(sequence)) {
+            throw 'sequence should be an array of event (not an array)';
+        }
+        if (sequence.length < 1) {
+            throw 'sequence should at least contain one event';
+        }
+        if (sequence.length > this.size) {
+            sequence = sequence.slice(0, this.size);
+        }
+        let suffixSequenceArray = generateSuffixSequenceArray(sequence);
+        let result = new Map();
+        for (let child  of this.children.keys()) {
+            let probabilityArray = suffixSequenceArray.map(suffixSequence => {
+                return this.children.get(child).getProbability(suffixSequence);
+            });
+            result.set(child, probabilityArray);
+        }
+        return result;
+    }
 }
 
-module.exports = EventTreeNode;
+function generateSuffixSequenceArray(sequence) {
+    let suffixSequenceArray = [];
+    for (let index = 0; index < sequence.length; index++) {
+        suffixSequenceArray.push(sequence.slice(index, sequence.length));
+    }
+    return suffixSequenceArray;
+}
+
+module.exports = EventTree;
