@@ -63,5 +63,23 @@ describe('EventTree', function () {
             assert.equal(map.get(eventA)[0], 0.5); 
             assert.equal(map.get(eventA).length, 1); 
         })
+
+        it('should return one for 3 sequence', () => {
+            let eventA = new Event('a');
+            let eventB = new Event('b');
+            let aabaList = [eventA, eventA, eventB, eventA];
+            let aaabList = [eventB, eventA, eventA, eventA];
+            let aaaaList = [eventA, eventA, eventA, eventA];
+
+            let tree = new EventTree(4);
+            tree.learn(aabaList);
+            tree.learn(aaabList);
+            tree.learn(aaaaList);
+
+            let map = tree.getProbabilityMap([eventA, eventA]);
+            assert.equal(map.get(eventA)[0], 2/3); 
+            assert.equal(map.get(eventA)[1], 6/7); 
+            assert.equal(map.get(eventA).length, 2); 
+        })
     });
 });
