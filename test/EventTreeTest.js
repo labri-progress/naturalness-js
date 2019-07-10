@@ -168,7 +168,7 @@ describe('EventTree', function () {
             let list4 = [eventX, eventY, eventW, eventD];
 
 
-            let tree = new EventTree(3);
+            let tree = new EventTree(4);
             for (let i=0; i<9; ++i) {
                 tree.learnAllSuffix(list1);
             }
