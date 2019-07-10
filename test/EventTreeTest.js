@@ -130,7 +130,7 @@ describe('EventTree', function () {
             let eventA = new Event('a');
             let eventB = new Event('b');
             let aabaList = [eventA, eventA, eventB, eventA];
-            let aaaaList = [eventB, eventA, eventA, eventA];
+            let aaaaList = [eventA, eventA, eventA, eventA];
 
             let tree = new EventTree(4);
             tree.learnAllSuffix(aabaList);
@@ -140,31 +140,36 @@ describe('EventTree', function () {
             let map = tree.getProbabilityMap([eventA, eventA]);
 
             //p(b | aa)
+            assert.equal(map.get(eventA)[0], 2/3); 
             assert.equal(map.get(eventB)[0], 1/3); 
 
             let abaaList = [eventA, eventB, eventA, eventA];
             tree.learnAllSuffix(abaaList);
             map = tree.getProbabilityMap([eventA]);
 
-            assert.equal(map.get(eventB)[0], 1/5); 
+            assert.equal(map.get(eventB)[0], 1/6); 
         })
 
-        it('should return probability form empty context', () => {
+    });
+
+    describe('#getProbabilityMatrix()', () => {
+
+        it.only("should return interpolated probability", () => {
             let eventA = new Event('a');
             let eventB = new Event('b');
-            let aabaList = [eventA, eventA, eventB, eventA];
-            let aaaaList = [eventB, eventA, eventA, eventA];
+            let aabList = [eventA, eventA, eventB];
+            let aaaList = [eventA, eventA, eventA];
 
-            let tree = new EventTree(4);
-            tree.learnAllSuffix(aabaList);
-            tree.learnAllSuffix(aaaaList);
+            let tree = new EventTree(3);
+            tree.learnAllSuffix(aabList);
+            tree.learnAllSuffix(aaaList);
 
             //p(? | aa) and p(? | a)
-            let map = tree.getProbabilityMap([]);
+            let map = tree.getProbability([eventA, eventA]);
+            assert.equal(map.get(eventA), 3.5/6) 
+            assert.equal(map.get(eventB), 2.5/6) 
 
-            //p(b | aa)
-            assert.equal(map.get(eventA)[0], 6/8); 
-            assert.equal(map.get(eventB)[0], 2/8); 
+            console.log(map)
         })
-    });
+    })
 });

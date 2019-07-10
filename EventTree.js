@@ -32,7 +32,7 @@ class EventTree {
     }
 
     getProbability(sequence) {
-        let res = Map();
+        let res = new Map();
         let probabilityMap = this.getProbabilityMap(sequence);
         for (let candidate of probabilityMap.keys()) {
             let proba = probabilityMap.get(candidate).reduce( (prev, cur, index) => {
