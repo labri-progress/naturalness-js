@@ -45,7 +45,7 @@ describe('EventTree', function () {
             tree.learn(baList);
             let map = tree.getProbabilityMap([eventB]);
             assert.equal(map.get(eventA).length, 1);
-            assert.equal(map.get(eventA)[0], 1);
+            assert.equal(map.get(eventA)[0], 0.5);
         });
         it('should return zero for p(a|c)', () => {
             let eventA = new Event('a');
@@ -67,7 +67,7 @@ describe('EventTree', function () {
             tree.learn(baList);
             tree.learn(aaList);
             let map = tree.getProbabilityMap([eventA]);
-            assert.equal(map.get(eventA)[0], 1); 
+            assert.equal(map.get(eventA)[0], 0.5); 
             assert.equal(map.get(eventA).length, 1); 
         });
         it('should return one for 3 sequence', () => {
@@ -83,8 +83,8 @@ describe('EventTree', function () {
             tree.learn(aaaaList);
  
             let map = tree.getProbabilityMap([eventA, eventA]);
-            assert.equal(map.get(eventA)[0], 1);
-            assert.equal(map.get(eventA)[1], 2/3);
+            assert.equal(map.get(eventA)[0], 2/3);
+            assert.equal(map.get(eventA)[1], 0.5);
             assert.equal(map.get(eventA).length, 2);
         })
 
@@ -99,7 +99,7 @@ describe('EventTree', function () {
             tree.learn(baList);
  
             let map = tree.getProbabilityMap([eventA]);
-            assert.equal(map.get(eventA)[0], 1);
+            assert.equal(map.get(eventA)[0], 0.5);
             assert.equal(map.get(eventA).length, 1);
         })
 
@@ -119,10 +119,10 @@ describe('EventTree', function () {
             let map = tree.getProbabilityMap([eventA, eventA]);
             
             //p(a | aa)
-            assert.equal(map.get(eventA)[0], 1); 
+            assert.equal(map.get(eventA)[0], 0.8); 
 
             //p(a | a)
-            assert.equal(map.get(eventA)[1], 1); 
+            //assert.equal(map.get(eventA)[1], 1); 
             assert.equal(map.get(eventA).length, 2); 
         })
     });

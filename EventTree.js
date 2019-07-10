@@ -38,7 +38,7 @@ class EventTree {
             let proba = probabilityMap.get(candidate).reduce( (prev, cur, index) => {
                 return prev + cur * Math.pow(2,probabilityMap.size -index);
             }, 0);
-            proba = proba / ((Math.pow(2, probabilityMap.size+1) - 1 );
+            proba = proba / (Math.pow(2, probabilityMap.size+1) - 1 );
             res.set(candidate, proba);
         }
         return res;
