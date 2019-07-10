@@ -126,7 +126,7 @@ describe('EventTree', function () {
             assert.equal(map.get(eventA).length, 2);
         })
 
-        it('should return probability for a not final event', () => {
+        it('should return undefined for a not final event', () => {
             let eventA = new Event('a');
             let eventB = new Event('b');
             let aabaList = [eventA, eventA, eventB, eventA];
@@ -140,36 +140,64 @@ describe('EventTree', function () {
             let map = tree.getProbabilityMap([eventA, eventA]);
 
             //p(b | aa)
-            assert.equal(map.get(eventA)[0], 2/3); 
-            assert.equal(map.get(eventB)[0], 1/3); 
-
-            let abaaList = [eventA, eventB, eventA, eventA];
-            tree.learnAllSuffix(abaaList);
-            map = tree.getProbabilityMap([eventA]);
-
-            assert.equal(map.get(eventB)[0], 1/6); 
-        })
-
-    });
-
-    describe('#getProbabilityMatrix()', () => {
-
-        it.only("should return interpolated probability", () => {
-            let eventA = new Event('a');
-            let eventB = new Event('b');
-            let aabList = [eventA, eventA, eventB];
-            let aaaList = [eventA, eventA, eventA];
-
-            let tree = new EventTree(3);
-            tree.learnAllSuffix(aabList);
-            tree.learnAllSuffix(aaaList);
-
-            //p(? | aa) and p(? | a)
-            let map = tree.getProbability([eventA, eventA]);
-            assert.equal(map.get(eventA), 3.5/6) 
-            assert.equal(map.get(eventB), 2.5/6) 
-
-            console.log(map)
+            assert.equal(map.get(eventB), undefined); 
         })
     })
-});
+
+    describe('#getProbability()', () => {
+
+        it.only("should match the table from, Interpolated n-grams for model based testing, Figure 4", () => {
+
+            //Implementing Figure 4 from article Interpolated n-grams for model based testing
+            let eventA = new Event('a');
+            let eventB = new Event('b');
+            let eventC = new Event('c');
+            let eventD = new Event('d');
+            let eventE = new Event('e');
+            let eventG = new Event('g');
+            let eventH = new Event('h');
+
+            let eventX = new Event('x');
+            let eventY = new Event('y');
+            let eventW = new Event('w');
+
+
+            let list1 = [eventA, eventB, eventC, eventD];
+            let list2 = [eventA, eventB, eventC, eventE];
+            let list3 = [eventH, eventG, eventC, eventE];
+            let list4 = [eventX, eventY, eventW, eventD];
+
+
+            let tree = new EventTree(3);
+            for (let i=0; i<9; ++i) {
+                tree.learn(list1);
+            }
+
+            tree.learn(list2);
+
+            for (let i=0; i<5; ++i) {
+                tree.learn(list3);
+            }
+
+            for (let i=0; i<5; ++i) {
+                tree.learn(list4);
+            }
+            
+            let map = tree.getProbabilityMap([eventC]);
+            assert.equal(map.get(eventE), 0.4) 
+            assert.equal(map.get(eventD), 0.6) 
+
+            map = tree.getProbabilityMap([eventB, eventC]);
+            assert.equal(map.get(eventE), 0.1) 
+            assert.equal(map.get(eventD), 0.9) 
+
+            map = tree.getProbabilityMap([eventY, eventC]);
+            assert.equal(map.get(eventE), 0) 
+            assert.equal(map.get(eventD), 0)
+
+            map = tree.getProbability([eventY, eventC]);
+            assert.equal(map.get(eventE), 0.8) 
+            assert.equal(map.get(eventD), 0.6)
+        })
+    })
+})
