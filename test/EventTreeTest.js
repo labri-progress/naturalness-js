@@ -146,7 +146,7 @@ describe('EventTree', function () {
 
     describe('#getProbability()', () => {
 
-        it.only("should match the table from, Interpolated n-grams for model based testing, Figure 4", () => {
+        it("should match the table from, Interpolated n-grams for model based testing, Figure 4", () => {
 
             //Implementing Figure 4 from article Interpolated n-grams for model based testing
             let eventA = new Event('a');
@@ -170,17 +170,17 @@ describe('EventTree', function () {
 
             let tree = new EventTree(3);
             for (let i=0; i<9; ++i) {
-                tree.learn(list1);
+                tree.learnAllSuffix(list1);
             }
 
-            tree.learn(list2);
+            tree.learnAllSuffix(list2);
 
             for (let i=0; i<5; ++i) {
-                tree.learn(list3);
+                tree.learnAllSuffix(list3);
             }
 
             for (let i=0; i<5; ++i) {
-                tree.learn(list4);
+                tree.learnAllSuffix(list4);
             }
             
             let map = tree.getProbabilityMap([eventC]);
