@@ -35,10 +35,11 @@ class EventTree {
         let res = new Map();
         let probabilityMap = this.getProbabilityMap(sequence);
         for (let candidate of probabilityMap.keys()) {
-            let proba = probabilityMap.get(candidate).reduce( (prev, cur, index) => {
-                return prev + cur * Math.pow(2,probabilityMap.size -index);
+            let probaArray = probabilityMap.get(candidate);
+            let proba = probaArray.reduce( (prev, cur, index) => {
+                return prev + cur * Math.pow(2,probaArray.length - index - 1);
             }, 0);
-            proba = proba / (Math.pow(2, probabilityMap.size+1) - 1 );
+            proba = proba / (Math.pow(2, probaArray.length) - 1 );
             res.set(candidate, proba);
         }
         return res;

@@ -184,20 +184,20 @@ describe('EventTree', function () {
             }
             
             let map = tree.getProbabilityMap([eventC]);
-            assert.equal(map.get(eventE), 0.4) 
-            assert.equal(map.get(eventD), 0.6) 
+            assert.equal(map.get(eventE)[0], 18/46) 
+            assert.equal(map.get(eventD)[0], 27/46) 
 
             map = tree.getProbabilityMap([eventB, eventC]);
-            assert.equal(map.get(eventE), 0.1) 
-            assert.equal(map.get(eventD), 0.9) 
+            assert.equal(map.get(eventE)[0], 2/21) 
+            assert.equal(map.get(eventD)[0], 18/21) 
 
             map = tree.getProbabilityMap([eventY, eventC]);
-            assert.equal(map.get(eventE), 0) 
-            assert.equal(map.get(eventD), 0)
+            assert.equal(map.get(eventE)[0], 0) 
+            assert.equal(map.get(eventD)[0], 0)
 
             map = tree.getProbability([eventY, eventC]);
-            assert.equal(map.get(eventE), 0.8) 
-            assert.equal(map.get(eventD), 0.6)
+            assert.equal(map.get(eventE), (18/46)/3); 
+            assert.equal(map.get(eventD), (27/46)/3);
         })
     })
 })
