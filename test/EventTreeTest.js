@@ -147,7 +147,24 @@ describe('EventTree', function () {
             map = tree.getProbabilityMap([eventA]);
 
             assert.equal(map.get(eventB)[0], 1/5); 
+        })
 
+        it('should return probability form empty context', () => {
+            let eventA = new Event('a');
+            let eventB = new Event('b');
+            let aabaList = [eventA, eventA, eventB, eventA];
+            let aaaaList = [eventB, eventA, eventA, eventA];
+
+            let tree = new EventTree(4);
+            tree.learnAllSuffix(aabaList);
+            tree.learnAllSuffix(aaaaList);
+
+            //p(? | aa) and p(? | a)
+            let map = tree.getProbabilityMap([]);
+
+            //p(b | aa)
+            assert.equal(map.get(eventA)[0], 6/8); 
+            assert.equal(map.get(eventB)[0], 2/8); 
         })
     });
 });
