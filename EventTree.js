@@ -53,7 +53,7 @@ class EventTree {
     }
 
     getCandidate() {
-        let res = Map();
+        let res = new Map();
         for (let candidate of this.children.keys()) {
             res.set(candidate,this.children.get(candidate).event);
         }
