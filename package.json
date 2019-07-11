@@ -1,6 +1,6 @@
 {
   "name": "naturalness",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Library implementing \"On the Naturalness of Software\"",
   "main": "index.js",
   "directories": {
