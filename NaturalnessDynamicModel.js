@@ -25,10 +25,10 @@ class NaturalnessDynamicModel {
         this.model.learnAllSuffix(sequence);
     }
 
-    getProbability(sequence) {
+    getProbability(context) {
         let result = [];
         let candidateMap = this.model.getCandidate();
-        let probabilityMap = this.model.getInterpolatedProbabilityMap(sequence);
+        let probabilityMap = this.model.getInterpolatedProbabilityMap(context);
         for (let candidate of candidateMap.keys()) {
             result.push({
                 event: candidateMap.get(candidate),
