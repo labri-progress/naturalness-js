@@ -1,4 +1,5 @@
 const EventTreeNode = require('./EventTreeNode.js');
+const Event = require('./Event.js');
 
 class EventTree {
     constructor(depth, interpolation, denominatorBias) {
@@ -32,10 +33,10 @@ class EventTree {
             return;
         }
         let lastEvent = sequence[sequence.length - 1];
-        let childTreeNode = this.children.get(lastEvent);
+        let childTreeNode = this.children.get(lastEvent.key);
         if (childTreeNode === undefined) {
             childTreeNode = new EventTreeNode(lastEvent, this.depth);
-            this.children.set(lastEvent, childTreeNode);
+            this.children.set(lastEvent.key, childTreeNode);
         }
         childTreeNode.learn(sequence);
         this.occurrence++;
@@ -103,13 +104,16 @@ class EventTree {
 
     getProbabilityMatrix(sequence) {
         if (! Array.isArray(sequence)) {
-            throw 'sequence should be an array';
+            throw 'getProbabilityMatrix: sequence should be an array';
         }
         if (sequence.length < 1) {
-            throw 'sequence should at least contain one event';
+            throw 'getProbabilityMatrix: sequence should at least contain one event';
         }
         if (sequence.length >= this.depth) {
             sequence = sequence.slice(0, this.depth);
+        }
+        if (! (sequence[0] instanceof Event)) {
+            throw 'getProbabilityMatrix: sequence should contain Event only !';
         }
         let suffixSequenceArray = generateSuffixSequenceArray(sequence);
         let candidateSuffixMatrix = [];
@@ -119,7 +123,7 @@ class EventTree {
             let candidateId = 0;
             for (let candidate of this.children.keys()) {
                 let suffixSequenceWithCandidate = [...suffixSequence];
-                suffixSequenceWithCandidate.push(candidate);
+                suffixSequenceWithCandidate.push(this.children.get(candidate).event);
                 let occurrence = this.children.get(candidate).getOccurence(suffixSequenceWithCandidate);
                 candidateSuffixMatrix[suffixSequenceId][candidateId] = occurrence;
                 candidateId++;

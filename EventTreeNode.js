@@ -37,11 +37,11 @@ class EventTreeNode {
         this.occurrence++;
         let subEventList = eventList.slice(0, eventList.length - 1);
         if (this.depth > 1 && subEventList.length >= 1) {
-            let lastSubEvent = subEventList[subEventList.length - 1];
-            let childTreeNode = this.children.get(lastSubEvent);
+            let lastOfSubEvent = subEventList[subEventList.length - 1];
+            let childTreeNode = this.children.get(lastOfSubEvent.key);
             if (childTreeNode === undefined) {
-                childTreeNode = new EventTreeNode(lastSubEvent, this.depth-1);
-                this.children.set(lastSubEvent, childTreeNode);
+                childTreeNode = new EventTreeNode(lastOfSubEvent, this.depth-1);
+                this.children.set(lastOfSubEvent.key, childTreeNode);
             }
             childTreeNode.learn(subEventList);
         }
@@ -67,8 +67,8 @@ class EventTreeNode {
         } else {
             if (this.depth > 1) {
                 let subSequence = sequence.slice(0, sequence.length - 1);
-                let lastSubSequence = subSequence[subSequence.length -1];
-                let subTreeNode = this.children.get(lastSubSequence);
+                let lastOfSubSequence = subSequence[subSequence.length -1];
+                let subTreeNode = this.children.get(lastOfSubSequence.key);
                 if (subTreeNode === undefined) {
                     return 0;
                 } else {

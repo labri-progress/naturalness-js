@@ -44,8 +44,8 @@ describe('EventTree', function () {
             let tree = new EventTree(2, 2, 1);
             tree.learn(baList);
             let map = tree.getProbabilityMap([eventB]);
-            assert.equal(map.get(eventA).length, 1);
-            assert.equal(map.get(eventA)[0], 0.5);
+            assert.equal(map.get(eventA.key).length, 1);
+            assert.equal(map.get(eventA.key)[0], 0.5);
         });
         it('should return zero for p(a|c)', () => {
             let eventA = new Event('a');
@@ -55,8 +55,8 @@ describe('EventTree', function () {
             let tree = new EventTree(2, 2, 1);
             tree.learn(baList);
             let map = tree.getProbabilityMap([eventC]);
-            assert.equal(map.get(eventA)[0], 0); 
-            assert.equal(map.get(eventA).length, 1); 
+            assert.equal(map.get(eventA.key)[0], 0); 
+            assert.equal(map.get(eventA.key).length, 1); 
         });
         it('should return 1 for p(a|a)', () => {
             let eventA = new Event('a');
@@ -67,8 +67,8 @@ describe('EventTree', function () {
             tree.learn(baList);
             tree.learn(aaList);
             let map = tree.getProbabilityMap([eventA]);
-            assert.equal(map.get(eventA)[0], 0.5); 
-            assert.equal(map.get(eventA).length, 1); 
+            assert.equal(map.get(eventA.key)[0], 0.5); 
+            assert.equal(map.get(eventA.key).length, 1); 
         });
         it('should return one for 3 sequence', () => {
             let eventA = new Event('a');
@@ -83,9 +83,9 @@ describe('EventTree', function () {
             tree.learn(aaaaList);
  
             let map = tree.getProbabilityMap([eventA, eventA]);
-            assert.equal(map.get(eventA)[0], 2/3);
-            assert.equal(map.get(eventA)[1], 0.5);
-            assert.equal(map.get(eventA).length, 2);
+            assert.equal(map.get(eventA.key)[0], 2/3);
+            assert.equal(map.get(eventA.key)[1], 0.5);
+            assert.equal(map.get(eventA.key).length, 2);
         })
 
         it('should return probability of sequence < to depth', () => {
@@ -99,8 +99,8 @@ describe('EventTree', function () {
             tree.learn(baList);
  
             let map = tree.getProbabilityMap([eventA]);
-            assert.equal(map.get(eventA)[0], 0.5);
-            assert.equal(map.get(eventA).length, 1);
+            assert.equal(map.get(eventA.key)[0], 0.5);
+            assert.equal(map.get(eventA.key).length, 1);
         })
 
         it('should lean all suffix and return probability', () => {
@@ -119,11 +119,11 @@ describe('EventTree', function () {
             let map = tree.getProbabilityMap([eventA, eventA]);
             
             //p(a | aa)
-            assert.equal(map.get(eventA)[0], 0.8); 
+            assert.equal(map.get(eventA.key)[0], 0.8); 
 
             //p(a | a)
-            //assert.equal(map.get(eventA)[1], 1); 
-            assert.equal(map.get(eventA).length, 2);
+            //assert.equal(map.get(eventA.key)[1], 1); 
+            assert.equal(map.get(eventA.key).length, 2);
         })
 
         it('should return undefined for a not final event', () => {
@@ -140,7 +140,7 @@ describe('EventTree', function () {
             let map = tree.getProbabilityMap([eventA, eventA]);
 
             //p(b | aa)
-            assert.equal(map.get(eventB), undefined); 
+            assert.equal(map.get(eventB.key), undefined); 
         })
     })
     describe('#getProbability()', () => {
@@ -182,20 +182,20 @@ describe('EventTree', function () {
             }
             
             let map = tree.getProbabilityMap([eventC]);
-            assert.equal(map.get(eventE)[0], 0.4) 
-            assert.equal(map.get(eventD)[0], 0.6) 
+            assert.equal(map.get(eventE.key)[0], 0.4) 
+            assert.equal(map.get(eventD.key)[0], 0.6) 
 
             map = tree.getProbabilityMap([eventB, eventC]);
-            assert.equal(map.get(eventE)[0], 0.1) 
-            assert.equal(map.get(eventD)[0], 0.9) 
+            assert.equal(map.get(eventE.key)[0], 0.1) 
+            assert.equal(map.get(eventD.key)[0], 0.9) 
 
             map = tree.getProbabilityMap([eventY, eventC]);
-            assert.equal(map.get(eventE)[0], 0) 
-            assert.equal(map.get(eventD)[0], 0)
+            assert.equal(map.get(eventE.key)[0], 0) 
+            assert.equal(map.get(eventD.key)[0], 0)
 
             map = tree.getProbability([eventY, eventC]);
-            assert.equal(map.get(eventE), 0.4); 
-            assert.equal(map.get(eventD), 0.6);
+            assert.equal(map.get(eventE.key), 0.4); 
+            assert.equal(map.get(eventD.key), 0.6);
         });
         it("should match the table from, Interpolated n-grams for model based testing, Figure 4 (with bias)", () => {
 
@@ -235,16 +235,16 @@ describe('EventTree', function () {
             }
             
             let map = tree.getProbabilityMap([eventC]);
-            assert.equal(map.get(eventE)[0], 18/46) 
-            assert.equal(map.get(eventD)[0], 27/46) 
+            assert.equal(map.get(eventE.key)[0], 18/46) 
+            assert.equal(map.get(eventD.key)[0], 27/46) 
 
             map = tree.getProbabilityMap([eventB, eventC]);
-            assert.equal(map.get(eventE)[0], 2/21) 
-            assert.equal(map.get(eventD)[0], 18/21) 
+            assert.equal(map.get(eventE.key)[0], 2/21) 
+            assert.equal(map.get(eventD.key)[0], 18/21) 
 
             map = tree.getProbabilityMap([eventY, eventC]);
-            assert.equal(map.get(eventE)[0], 0) 
-            assert.equal(map.get(eventD)[0], 0)
+            assert.equal(map.get(eventE.key)[0], 0) 
+            assert.equal(map.get(eventD.key)[0], 0)
         });
         it('', () => {
             //Implementing Figure 4 from article Interpolated n-grams for model based testing
@@ -260,7 +260,7 @@ describe('EventTree', function () {
             tree.learnWithSlideWindow([a, b, c, d, e, f, g]);
 
             let probaMap = tree.getProbability([d, e, f]);
-            assert.equal(probaMap.get(g), 1);
+            assert.equal(probaMap.get(g.key), 1);
             
 
 
