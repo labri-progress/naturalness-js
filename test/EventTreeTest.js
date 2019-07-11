@@ -196,9 +196,7 @@ describe('EventTree', function () {
             map = tree.getProbability([eventY, eventC]);
             assert.equal(map.get(eventE), 0.4); 
             assert.equal(map.get(eventD), 0.6);
-        })
-    });
-    describe('#getProbability()', () => {
+        });
         it("should match the table from, Interpolated n-grams for model based testing, Figure 4 (with bias)", () => {
 
             //Implementing Figure 4 from article Interpolated n-grams for model based testing
@@ -247,6 +245,25 @@ describe('EventTree', function () {
             map = tree.getProbabilityMap([eventY, eventC]);
             assert.equal(map.get(eventE)[0], 0) 
             assert.equal(map.get(eventD)[0], 0)
+        });
+        it('', () => {
+            //Implementing Figure 4 from article Interpolated n-grams for model based testing
+            let a = new Event('a');
+            let b = new Event('b');
+            let c = new Event('c');
+            let d = new Event('d');
+            let e = new Event('e');
+            let f = new Event('f');
+            let g = new Event('g');
+
+            let tree = new EventTree(4, 2, 1);    
+            tree.learnWithSlideWindow([a, b, c, d, e, f, g]);
+
+            let probaMap = tree.getProbability([d, e, f]);
+            assert.equal(probaMap.get(g), 1);
+            
+
+
         })
     })
 })

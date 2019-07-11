@@ -46,8 +46,8 @@ class EventTree {
     }
 
     learnWithSlideWindow(sequence) {
-        for (let index = 0; index < sequence.length - this.depth; index++) {
-            learn(sequence.slice(index, this.depth+index));
+        for (let index = 0; index <= sequence.length - this.depth; index++) {
+            this.learn(sequence.slice(index, this.depth+index));
         }
     }
 
@@ -64,7 +64,6 @@ class EventTree {
             res.set(candidate, proba);
         }
         let probaSum = probaAllCandidateArray.reduce( (prev, cur) => prev+cur,0);
-        console.log(`probaSum:${probaSum}`);
         for (let candidate of probabilityMap.keys()) {
             let oldProba = res.get(candidate);
             res.set(candidate, probaSum === 0 ? 0 : oldProba / probaSum);
