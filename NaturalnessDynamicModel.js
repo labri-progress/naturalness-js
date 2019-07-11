@@ -17,8 +17,8 @@ class NaturalnessDynamicModel {
         this.model.learn(sequence);
     }
 
-    learnWithSlideWindow(sequence) {
-        this.model.learnWithSlideWindow(sequence);
+    learnWithSlidingWindow(sequence) {
+        this.model.learnWithSlidingWindow(sequence);
     }
 
     learnAllSuffix(sequence) {
@@ -26,15 +26,16 @@ class NaturalnessDynamicModel {
     }
 
     getProbability(sequence) {
-        return this.model.getProbability(sequence);
-    }
-
-    getProbabilityMap(sequence) {
-        return this.model.getProbabilityMap(sequence);
-    }
-
-    getProbabilityMatrix(sequence) {
-        return this.model.getProbabilityMatrix(sequence);
+        let result = [];
+        let candidateMap = this.model.getCandidate();
+        let probabilityMap = this.model.getProbability(sequence);
+        for (let candidate of candidateMap.keys()) {
+            result.push({
+                event: candidateMap.get(candidate),
+                probability : probabilityMap.get(candidate)
+            });
+        }
+        return result;
     }
 }
 

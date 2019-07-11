@@ -46,13 +46,21 @@ class EventTree {
         generateSuffixSequenceArray(sequence).map(suffix => {this.learn(suffix)});
     }
 
-    learnWithSlideWindow(sequence) {
+    learnWithSlidingWindow(sequence) {
         for (let index = 0; index <= sequence.length - this.depth; index++) {
             this.learn(sequence.slice(index, this.depth+index));
         }
     }
 
-    getProbability(sequence) {
+    getCandidate() {
+        let res = Map();
+        for (let candidate of this.children.keys()) {
+            res.set(candidate,this.children.get(candidate).event);
+        }
+        return res;
+    }
+
+    getInterpolatedProbabilityMap(sequence) {
         let res = new Map();
         let probaAllCandidateArray = [];
         let probabilityMap = this.getProbabilityMap(sequence);
@@ -75,9 +83,9 @@ class EventTree {
     getProbabilityMap(sequence) {
         let candidateSuffixMatrix = this.getProbabilityMatrix(sequence);
         
-        let result = new Map();
+        let keyProbaMap = new Map();
         for (let candidate of this.children.keys()) {
-            result.set(candidate,[]);
+            keyProbaMap.set(candidate,[]);
         }
 
         if (sequence.length >= this.depth) {
@@ -95,11 +103,11 @@ class EventTree {
                 } else {
                     proba = candidateSuffixMatrix[suffixSequenceId][candidateId]/ (allOccurrence+this.denominatorBias);
                 }
-                result.get(candidate).push(proba);
+                keyProbaMap.get(candidate).push(proba);
                 candidateId++;
             }
         }
-        return result;
+        return keyProbaMap;
     }
 
     getProbabilityMatrix(sequence) {

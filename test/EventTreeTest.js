@@ -193,7 +193,7 @@ describe('EventTree', function () {
             assert.equal(map.get(eventE.key)[0], 0) 
             assert.equal(map.get(eventD.key)[0], 0)
 
-            map = tree.getProbability([eventY, eventC]);
+            map = tree.getInterpolatedProbabilityMap([eventY, eventC]);
             assert.equal(map.get(eventE.key), 0.4); 
             assert.equal(map.get(eventD.key), 0.6);
         });
@@ -257,9 +257,9 @@ describe('EventTree', function () {
             let g = new Event('g');
 
             let tree = new EventTree(4, 2, 1);    
-            tree.learnWithSlideWindow([a, b, c, d, e, f, g]);
+            tree.learnWithSlidingWindow([a, b, c, d, e, f, g]);
 
-            let probaMap = tree.getProbability([d, e, f]);
+            let probaMap = tree.getInterpolatedProbabilityMap([d, e, f]);
             assert.equal(probaMap.get(g.key), 1);
             
 
