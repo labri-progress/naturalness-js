@@ -64,7 +64,6 @@ class EventTree {
             res.set(candidate, proba);
         }
         let probaSum = probaAllCandidateArray.reduce( (prev, cur) => prev+cur,0);
-        console.log(`probaSum:${probaSum}`);
         for (let candidate of probabilityMap.keys()) {
             let oldProba = res.get(candidate);
             res.set(candidate, probaSum === 0 ? 0 : oldProba / probaSum);
