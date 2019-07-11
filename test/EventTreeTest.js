@@ -8,14 +8,14 @@ describe('EventTree', function () {
         it('should throw exception (no parameter)', () => {
             expect(() => {new EventTree()}).to.throw();
         });
-        it('should throw exception (negative size)', () => {
+        it('should throw exception (negative depth)', () => {
             expect(() => {new EventTree(-1)}).to.throw();
         });
         it('should throw exception (NaN)', () => {
             expect(() => {new EventTree('a')}).to.throw();
         });
         it('should build an Event', () => {
-            expect(() => {new EventTree(1)}).to.not.throw();
+            expect(() => {new EventTree(2, 2, 1)}).to.not.throw();
         });
     });
     describe('#learn()', () => {
@@ -23,15 +23,15 @@ describe('EventTree', function () {
             let eventA = new Event('a');
             let eventB = new Event('b');
             let baList = [eventB, eventA];
-            let tree = new EventTree(2);
+            let tree = new EventTree(2, 2, 1);
             tree.learn(baList);
             assert.equal(tree.occurrence, 1);
         })
 
-        it('should learn a sequence of length < to size', () => {
+        it('should learn a sequence of length < to depth', () => {
             let eventB = new Event('b');
             let baList = [eventB];
-            let tree = new EventTree(2);
+            let tree = new EventTree(2, 2, 1);
             tree.learn(baList);
             assert.equal(tree.occurrence, 1);
         })
@@ -41,7 +41,7 @@ describe('EventTree', function () {
             let eventA = new Event('a');
             let eventB = new Event('b');
             let baList = [eventB, eventA];
-            let tree = new EventTree(2);
+            let tree = new EventTree(2, 2, 1);
             tree.learn(baList);
             let map = tree.getProbabilityMap([eventB]);
             assert.equal(map.get(eventA).length, 1);
@@ -52,7 +52,7 @@ describe('EventTree', function () {
             let eventB = new Event('b');
             let eventC = new Event('c');
             let baList = [eventB, eventA];
-            let tree = new EventTree(2);
+            let tree = new EventTree(2, 2, 1);
             tree.learn(baList);
             let map = tree.getProbabilityMap([eventC]);
             assert.equal(map.get(eventA)[0], 0); 
@@ -63,7 +63,7 @@ describe('EventTree', function () {
             let eventB = new Event('b');
             let baList = [eventB, eventA];
             let aaList = [eventA, eventA];
-            let tree = new EventTree(2);
+            let tree = new EventTree(2, 2, 1);
             tree.learn(baList);
             tree.learn(aaList);
             let map = tree.getProbabilityMap([eventA]);
@@ -77,7 +77,7 @@ describe('EventTree', function () {
             let baaaList = [eventB, eventA, eventA, eventA];
             let aaaaList = [eventA, eventA, eventA, eventA];
  
-            let tree = new EventTree(4);
+            let tree = new EventTree(4, 2, 1);
             tree.learn(ababList);
             tree.learn(baaaList);
             tree.learn(aaaaList);
@@ -88,13 +88,13 @@ describe('EventTree', function () {
             assert.equal(map.get(eventA).length, 2);
         })
 
-        it('should return probability of sequence < to size', () => {
+        it('should return probability of sequence < to depth', () => {
             let eventA = new Event('a');
             let eventB = new Event('b');
             let aaList = [eventA, eventA];
             let baList = [eventB, eventA];
  
-            let tree = new EventTree(3);
+            let tree = new EventTree(3, 2, 1);
             tree.learn(aaList);
             tree.learn(baList);
  
@@ -110,7 +110,7 @@ describe('EventTree', function () {
             let aaabList = [eventB, eventA, eventA, eventA];
             let aaaaList = [eventA, eventA, eventA, eventA];
 
-            let tree = new EventTree(4);
+            let tree = new EventTree(4, 2, 1);
             tree.learnAllSuffix(aabaList);
             tree.learnAllSuffix(aaabList);
             tree.learnAllSuffix(aaaaList);
@@ -132,7 +132,7 @@ describe('EventTree', function () {
             let aabaList = [eventA, eventA, eventB, eventA];
             let aaaaList = [eventA, eventA, eventA, eventA];
 
-            let tree = new EventTree(4);
+            let tree = new EventTree(4, 2, 1);
             tree.learnAllSuffix(aabaList);
             tree.learnAllSuffix(aaaaList);
 
@@ -143,9 +143,7 @@ describe('EventTree', function () {
             assert.equal(map.get(eventB), undefined); 
         })
     })
-
     describe('#getProbability()', () => {
-
         it("should match the table from, Interpolated n-grams for model based testing, Figure 4", () => {
 
             //Implementing Figure 4 from article Interpolated n-grams for model based testing
@@ -168,7 +166,62 @@ describe('EventTree', function () {
             let list4 = [eventX, eventY, eventW, eventD];
 
 
-            let tree = new EventTree(4);
+            let tree = new EventTree(4, 2, 0);    
+            for (let i=0; i<9; ++i) {
+                tree.learnAllSuffix(list1);
+            }
+
+            tree.learnAllSuffix(list2);
+
+            for (let i=0; i<5; ++i) {
+                tree.learnAllSuffix(list3);
+            }
+
+            for (let i=0; i<5; ++i) {
+                tree.learnAllSuffix(list4);
+            }
+            
+            let map = tree.getProbabilityMap([eventC]);
+            assert.equal(map.get(eventE)[0], 0.4) 
+            assert.equal(map.get(eventD)[0], 0.6) 
+
+            map = tree.getProbabilityMap([eventB, eventC]);
+            assert.equal(map.get(eventE)[0], 0.1) 
+            assert.equal(map.get(eventD)[0], 0.9) 
+
+            map = tree.getProbabilityMap([eventY, eventC]);
+            assert.equal(map.get(eventE)[0], 0) 
+            assert.equal(map.get(eventD)[0], 0)
+
+            map = tree.getProbability([eventY, eventC]);
+            assert.equal(map.get(eventE), 0.4); 
+            assert.equal(map.get(eventD), 0.6);
+        })
+    });
+    describe('#getProbability()', () => {
+        it("should match the table from, Interpolated n-grams for model based testing, Figure 4 (with bias)", () => {
+
+            //Implementing Figure 4 from article Interpolated n-grams for model based testing
+            let eventA = new Event('a');
+            let eventB = new Event('b');
+            let eventC = new Event('c');
+            let eventD = new Event('d');
+            let eventE = new Event('e');
+            let eventG = new Event('g');
+            let eventH = new Event('h');
+
+            let eventX = new Event('x');
+            let eventY = new Event('y');
+            let eventW = new Event('w');
+
+
+            let list1 = [eventA, eventB, eventC, eventD];
+            let list2 = [eventA, eventB, eventC, eventE];
+            let list3 = [eventH, eventG, eventC, eventE];
+            let list4 = [eventX, eventY, eventW, eventD];
+
+
+            let tree = new EventTree(4, 2, 1);    
             for (let i=0; i<9; ++i) {
                 tree.learnAllSuffix(list1);
             }
@@ -194,10 +247,6 @@ describe('EventTree', function () {
             map = tree.getProbabilityMap([eventY, eventC]);
             assert.equal(map.get(eventE)[0], 0) 
             assert.equal(map.get(eventD)[0], 0)
-
-            map = tree.getProbability([eventY, eventC]);
-            assert.equal(map.get(eventE), (18/46)/3); 
-            assert.equal(map.get(eventD), (27/46)/3);
         })
     })
 })

@@ -17,10 +17,10 @@ describe('EventTreeNode', function () {
         it('should throw exception (no event)', () => {
             expect(() => {new EventTreeNode(null, 10)}).to.throw();
         });
-        it('should throw exception (size isNan)', () => {
+        it('should throw exception (depth isNan)', () => {
             expect(() => {new EventTreeNode(new Event('e'),'e')}).to.throw();
         });
-        it('should throw exception (size isNan)', () => {
+        it('should throw exception (depth isNan)', () => {
             expect(() => {new EventTreeNode(new Event('e'), -1)}).to.throw();
         });
         it('should build an Event', () => {

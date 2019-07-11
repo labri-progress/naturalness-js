@@ -1,30 +1,30 @@
 const Event = require('./Event.js');
 
 class EventTreeNode {
-    constructor(event, size) {
+    constructor(event, depth) {
         if (event === null || event === undefined) {
             throw 'Cannot create EventNode with null or undefined';
         }
         if (!(event instanceof Event)) {
             throw 'Wrong Type, should be Event';
         }
-        if (isNaN(size)) {
-            throw 'Cannot create EventNode with no size';
+        if (isNaN(depth)) {
+            throw 'Cannot create EventNode with no depth';
         }
-        if (size < 0 ) {
-            throw 'Size should be positive';
+        if (depth < 0 ) {
+            throw 'depth should be positive';
         }
         this.event = event;
         this.key = event.key;
-        this.size = size;
+        this.depth = depth;
         this.occurrence = 0;
-        if (size > 1) {
+        if (depth > 1) {
             this.children = new Map();
         }
     }
 
     learn(eventList) {
-        if (this.size == 0) {
+        if (this.depth == 0) {
             return;
         }
         if (eventList === null || eventList === undefined || eventList.length === 0) {
@@ -36,11 +36,11 @@ class EventTreeNode {
         }
         this.occurrence++;
         let subEventList = eventList.slice(0, eventList.length - 1);
-        if (this.size > 1 && subEventList.length >= 1) {
+        if (this.depth > 1 && subEventList.length >= 1) {
             let lastSubEvent = subEventList[subEventList.length - 1];
             let childTreeNode = this.children.get(lastSubEvent);
             if (childTreeNode === undefined) {
-                childTreeNode = new EventTreeNode(lastSubEvent, this.size-1);
+                childTreeNode = new EventTreeNode(lastSubEvent, this.depth-1);
                 this.children.set(lastSubEvent, childTreeNode);
             }
             childTreeNode.learn(subEventList);
@@ -65,7 +65,7 @@ class EventTreeNode {
         if (sequence.length === 1) {
             return this.occurrence;
         } else {
-            if (this.size > 1) {
+            if (this.depth > 1) {
                 let subSequence = sequence.slice(0, sequence.length - 1);
                 let lastSubSequence = subSequence[subSequence.length -1];
                 let subTreeNode = this.children.get(lastSubSequence);

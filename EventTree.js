@@ -1,14 +1,28 @@
 const EventTreeNode = require('./EventTreeNode.js');
 
 class EventTree {
-    constructor(size) {
-        if (isNaN(size)) {
-            throw 'Cannot create EventNode with no size';
+    constructor(depth, interpolation, denominatorBias) {
+        if (isNaN(depth)) {
+            throw 'Cannot create EventTree with no depth';
         }
-        if (size <= 0) {
-            throw 'Size should be positive';
+        if (depth <= 1) {
+            throw 'depth should be greater than 1';
         }
-        this.size = size;
+        if (isNaN(interpolation)) {
+            throw 'Cannot create EventTree with no interpolation';
+        }
+        if (interpolation <= 0) {
+            throw 'interpolation should be positive';
+        }
+        if (isNaN(denominatorBias)) {
+            throw 'Cannot create EventTree with no denominatorBias ';
+        }
+        if (interpolation < 0) {
+            throw 'denominatorBias should be positive';
+        }
+        this.depth = depth;
+        this.interpolation = interpolation;
+        this.denominatorBias = denominatorBias;
         this.occurrence = 0;
         this.children = new Map();
     }
@@ -20,7 +34,7 @@ class EventTree {
         let lastEvent = sequence[sequence.length - 1];
         let childTreeNode = this.children.get(lastEvent);
         if (childTreeNode === undefined) {
-            childTreeNode = new EventTreeNode(lastEvent, this.size);
+            childTreeNode = new EventTreeNode(lastEvent, this.depth);
             this.children.set(lastEvent, childTreeNode);
         }
         childTreeNode.learn(sequence);
@@ -31,16 +45,29 @@ class EventTree {
         generateSuffixSequenceArray(sequence).map(suffix => {this.learn(suffix)});
     }
 
+    learnWithSlideWindow(sequence) {
+        for (let index = 0; index < sequence.length - this.depth; index++) {
+            learn(sequence.slice(index, this.depth+index));
+        }
+    }
+
     getProbability(sequence) {
         let res = new Map();
+        let probaAllCandidateArray = [];
         let probabilityMap = this.getProbabilityMap(sequence);
         for (let candidate of probabilityMap.keys()) {
             let probaArray = probabilityMap.get(candidate);
             let proba = probaArray.reduce( (prev, cur, index) => {
-                return prev + cur * Math.pow(2,probaArray.length - index - 1);
+                return prev + cur * Math.pow(this.interpolation,probaArray.length - index);
             }, 0);
-            proba = proba / (Math.pow(2, probaArray.length) - 1 );
+            probaAllCandidateArray.push(proba);
             res.set(candidate, proba);
+        }
+        let probaSum = probaAllCandidateArray.reduce( (prev, cur) => prev+cur,0);
+        console.log(`probaSum:${probaSum}`);
+        for (let candidate of probabilityMap.keys()) {
+            let oldProba = res.get(candidate);
+            res.set(candidate, probaSum === 0 ? 0 : oldProba / probaSum);
         }
         return res;
     }
@@ -53,8 +80,8 @@ class EventTree {
             result.set(candidate,[]);
         }
 
-        if (sequence.length >= this.size) {
-            sequence = sequence.slice(0, this.size);
+        if (sequence.length >= this.depth) {
+            sequence = sequence.slice(0, this.depth);
         }
         let suffixSequenceArray = generateSuffixSequenceArray(sequence);
         
@@ -66,7 +93,7 @@ class EventTree {
                 if (allOccurrence === 0) {
                     proba = 0;
                 } else {
-                    proba = candidateSuffixMatrix[suffixSequenceId][candidateId]/ (allOccurrence+1);
+                    proba = candidateSuffixMatrix[suffixSequenceId][candidateId]/ (allOccurrence+this.denominatorBias);
                 }
                 result.get(candidate).push(proba);
                 candidateId++;
@@ -82,8 +109,8 @@ class EventTree {
         if (sequence.length < 1) {
             throw 'sequence should at least contain one event';
         }
-        if (sequence.length >= this.size) {
-            sequence = sequence.slice(0, this.size);
+        if (sequence.length >= this.depth) {
+            sequence = sequence.slice(0, this.depth);
         }
         let suffixSequenceArray = generateSuffixSequenceArray(sequence);
         let candidateSuffixMatrix = [];
