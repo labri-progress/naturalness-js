@@ -28,7 +28,7 @@ class NaturalnessDynamicModel {
     getProbability(sequence) {
         let result = [];
         let candidateMap = this.model.getCandidate();
-        let probabilityMap = this.model.getProbability(sequence);
+        let probabilityMap = this.model.getInterpolatedProbabilityMap(sequence);
         for (let candidate of candidateMap.keys()) {
             result.push({
                 event: candidateMap.get(candidate),
