@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/labri-progress/naturalness-js#readme",
   "devDependencies": {
+    "lodash": ">=4.17.13",
     "chai": "^4.2.0",
     "mocha": "^6.1.4"
   }
