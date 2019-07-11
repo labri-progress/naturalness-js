@@ -18,7 +18,7 @@ class NaturalnessDynamicModel {
     }
 
     learnWithSlideWindow(sequence) {
-        this.model.learn(sequence);
+        this.model.learnWithSlideWindow(sequence);
     }
 
     learnAllSuffix(sequence) {
