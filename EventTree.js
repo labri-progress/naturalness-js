@@ -47,12 +47,12 @@ class EventTree {
     }
 
     learnWithSlidingWindow(sequence) {
-        if (sequence.length <= this.depth) {
-            this.learn(sequence);
-        } else {
-            for (let index = 0; index <= sequence.length - this.depth; index++) {
-                this.learn(sequence.slice(index, this.depth+index));
+        for (let index = 0; index <= sequence.length; index++) {
+            let start = index - sequence.length;
+            if (start < 0) {
+                start = 0;
             }
+            this.learn(sequence.slice(start, index));
         }
     }
 

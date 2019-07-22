@@ -13,16 +13,16 @@ class NaturalnessDynamicModel {
         this.model = new EventTree(this.depth, this.interpolation, this.denominatorBias);
     }
 
-    learn(sequence) {
-        this.model.learn(sequence);
+    learn(eventSequence) {
+        this.model.learn(eventSequence);
     }
 
-    learnWithSlidingWindow(sequence) {
-        this.model.learnWithSlidingWindow(sequence);
+    learnWithSlidingWindow(eventSequence) {
+        this.model.learnWithSlidingWindow(eventSequence);
     }
 
-    learnAllSuffix(sequence) {
-        this.model.learnAllSuffix(sequence);
+    learnAllSuffix(eventSequence) {
+        this.model.learnAllSuffix(eventSequence);
     }
 
     getProbability(context) {
