@@ -145,7 +145,7 @@ class EventTree {
     }
 
     crossEntropy(eventSequence) {
-        const probaOfUnknown = 0.0000001;
+        const probaOfUnknown = 1e-6;
         if (eventSequence === null || eventSequence === undefined) {
             throw new Error('no eventSequence');
         }
@@ -165,7 +165,7 @@ class EventTree {
             }
             probabilitySum = probabilitySum + Math.log2(proba);
         }
-        return -(probabilitySum / eventSequence.length);
+        return -(probabilitySum / (eventSequence.length-1));
     }
 }
 

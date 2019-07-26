@@ -296,7 +296,7 @@ describe('EventTree', function () {
 
             tree.learnWithSlidingWindow(aabaList);
             let crossEnt = tree.crossEntropy(ccccList);
-            assert.equal(crossEnt, 17.44012249815865);
+            assert.equal(crossEnt, -Math.log2(1e-6));
         });
     });
 })
