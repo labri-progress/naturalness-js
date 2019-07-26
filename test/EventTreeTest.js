@@ -266,4 +266,37 @@ describe('EventTree', function () {
 
         })
     })
+    describe('#crossEntropy()', () => {
+        it('should compute unknown proba crossEntropy with empty seq', () => {
+            let tree = new EventTree(4, 2, 1); 
+            let crossEnt = tree.crossEntropy([]);
+            assert.equal(crossEnt, 0.0000001);
+        });
+        it('should compute crossEntropy with all right', () => {
+            let tree = new EventTree(4, 2, 1); 
+            let eventA = new Event('a');
+            let eventB = new Event('b');
+            let aabaList = [eventA, eventA, eventB, eventA];
+            let aaabList = [eventB, eventA, eventA, eventA];
+            let aaaaList = [eventA, eventA, eventA, eventA];
+
+            tree.learnWithSlidingWindow(aabaList);
+            let crossEnt = tree.crossEntropy(aabaList);
+            assert.equal(crossEnt, 0.330482131923974);
+        });
+        it.only('should compute crossEntropy with all wrong', () => {
+            let tree = new EventTree(4, 2, 1); 
+            let eventA = new Event('a');
+            let eventB = new Event('b');
+            let eventC = new Event('c');
+            let aabaList = [eventA, eventA, eventB, eventA];
+            let aaabList = [eventB, eventA, eventA, eventA];
+            let aaaaList = [eventA, eventA, eventA, eventA];
+            let ccccList = [eventC, eventC, eventC, eventC];
+
+            tree.learnWithSlidingWindow(aabaList);
+            let crossEnt = tree.crossEntropy(ccccList);
+            assert.equal(crossEnt, 17.44012249815865);
+        });
+    });
 })

@@ -1,4 +1,3 @@
-const Sequence = require('./Sequence.js');
 const EventTree = require('./EventTree.js');
 
 const DEPTH = 8;
@@ -36,6 +35,10 @@ class NaturalnessDynamicModel {
             });
         }
         return result;
+    }
+
+    crossEntropy(eventSequence) {
+        return this.model.crossEntropy(eventSequence);
     }
 }
 

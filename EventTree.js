@@ -143,6 +143,30 @@ class EventTree {
         }
         return candidateSuffixMatrix;
     }
+
+    crossEntropy(eventSequence) {
+        const probaOfUnknown = 0.0000001;
+        if (eventSequence === null || eventSequence === undefined) {
+            throw new Error('no eventSequence');
+        }
+        if (eventSequence.length === 0) return probaOfUnknown;
+        let probabilitySum = 0;
+        for (let index = eventSequence.length-1; index > 0; index--) {
+            let lastEvent = eventSequence[index];
+            let contextSequence = eventSequence.slice(0, index);
+            let probabilityMap = this.getInterpolatedProbabilityMap(contextSequence);
+            
+            let modelProba = probabilityMap.get(lastEvent.key);
+            let proba;
+            if (modelProba === null || modelProba === undefined || modelProba === 0) {
+                proba = probaOfUnknown;
+            } else {
+                proba = modelProba * (1 - probaOfUnknown);
+            }
+            probabilitySum = probabilitySum + Math.log2(proba);
+        }
+        return -(probabilitySum / eventSequence.length);
+    }
 }
 
 function generateSuffixSequenceArray(sequence) {
